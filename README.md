@@ -15,3 +15,6 @@ This is to allow PATH to be exported to point directly to this directory.
 Note that all binaries linked here from the misc/ directory are prefixed misc_ so as to not collide 
 with any system installed utilities, if using a misc application beware that it will be removed the 
 moment it is folded into the main dt application (or deleted)
+
+## doc
+Various documentation and templates
