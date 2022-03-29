@@ -6,8 +6,67 @@ use v5.28;
 
 use experimental 'signatures';
 
+use Data::Dumper;
+
+# Configuration for what this script will accept, if anything
+my $cli_spec = [qw(verbose+ string=s)];
+
+# Return whatever main sent as an exit value, if nothing exit on 0
 exit main(@ARGV);
 
 sub main(@args) {
+    # Fetch an apphelper object
+    my $app = _app_helper->new($cli_spec,\@args);
+
+    # Insert code here
+    
+
     return 0;
 }
+
+package _app_helper;
+
+use warnings;
+use strict;
+use v5.28;
+
+use experimental 'signatures';
+
+use Getopt::Long;
+
+sub new($class,$cli_spec,$args) {
+    # Some private stuff for ourself
+    my $self = {
+        'cli'   =>  {
+            'spec'  =>  $cli_spec,
+            'args'  =>  $args
+        }
+    };
+
+    # Go with god my son
+    bless $self, $class;
+
+    # use GetOpt to process the commandline
+    $self->{'cli'}->{'opt'}     = 
+        $self->process_cli;
+
+    return $self;
+}
+
+sub process_cli($self) {
+    my @args            =
+        @{$self->{'cli'}->{'args'}};
+    my %cli_values      =
+        ();
+    my $cli_parser      =
+        Getopt::Long::Parser->new;
+    my $cli_parse_state =
+        $cli_parser->getoptionsfromarray(
+            \@args,
+            \%cli_values,
+            @{$self->{'cli'}->{'spec'}}
+        );
+
+    { values=>\%cli_values, error=>$cli_parse_state?0:1 }
+}
+
